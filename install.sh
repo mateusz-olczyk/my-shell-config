@@ -24,6 +24,12 @@ CARGO_PACKAGES=(
     eza
 )
 
+GIT_PACKAGES=(
+    "https://github.com/romkatv/powerlevel10k.git|$P10K_DIR"
+    "https://github.com/zsh-users/zsh-syntax-highlighting.git|$ZSH_SYNTAX_HIGHLIGHTING_DIR"
+    "https://github.com/tmux-plugins/tpm|$TPM_DIR"
+)
+
 if [ $(whoami) = "root" ]; then
     sudo() { "$@"; }
 fi
@@ -43,28 +49,27 @@ if ! grep -F '. "$HOME/.cargo/env"' "$HOME/.profile" >/dev/null; then
     echo '. "$HOME/.cargo/env"' >> "$HOME/.profile"
 fi
 
-for PACKAGE_NAME in ${CARGO_PACKAGES[@]}; do
-    if ! which $PACKAGE_NAME >/dev/null; then
+for PACKAGE_DEF in ${CARGO_PACKAGES[@]}; do
+    PACKAGE_NAME=${PACKAGE_DEF/:*/}
+    APP_NAME=${PACKAGE_DEF/*:/}
+
+    if ! which $APP_NAME >/dev/null; then
         cargo install $PACKAGE_NAME
     fi
 done
-
 
 if ! [ -d "$OMZ_CUSTOM_DIR" ]; then
     sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)" "" --unattended
 fi
 
-if ! [ -d "$P10K_DIR" ]; then
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
-fi
+for GIT_PACKAGE in ${GIT_PACKAGES[@]}; do
+    GIT_URL=${GIT_PACKAGE/|*/}
+    GIT_TARGET_DIR=${GIT_PACKAGE/*|/}
 
-if ! [ -d "$ZSH_SYNTAX_HIGHLIGHTING_DIR" ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_SYNTAX_HIGHLIGHTING_DIR"
-fi
-
-if ! [ -d "$TPM_DIR" ]; then
-    git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
-fi
+    if ! [ -d "$GIT_TARGET_DIR" ]; then
+        git clone "$GIT_URL" "$GIT_TARGET_DIR"
+    fi
+done
 
 cp -rv "$SCRIPT_DIR/home/." "$HOME"
 
