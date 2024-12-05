@@ -10,4 +10,4 @@ docker run \
      --env TERM=xterm-256color \
     --mount type=bind,source="$SCRIPT_DIR",destination=/home/ubuntu,readonly \
     ubuntu:latest \
-    bash -c '/home/ubuntu/install.sh && tmux'
+    /home/ubuntu/install.sh

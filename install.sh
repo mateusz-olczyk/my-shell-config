@@ -8,14 +8,9 @@ ZSHRC_PATH="$HOME/.zshrc"
 ZSH_SYNTAX_HIGHLIGHTING_DIR="$OMZ_CUSTOM_DIR/plugins/zsh-syntax-highlighting"
 TPM_DIR="$HOME/.tmux/plugins/tpm"
 
-if [ $(whoami) = "root" ]; then
-    sudo() { "$@"; }
-fi
-
-sudo apt update
-
 APT_PACKAGES=(
     bat:batcat
+    cargo
     git
     less
     nano
@@ -25,6 +20,16 @@ APT_PACKAGES=(
     zsh
 )
 
+CARGO_PACKAGES=(
+    eza
+)
+
+if [ $(whoami) = "root" ]; then
+    sudo() { "$@"; }
+fi
+
+sudo apt update
+
 for PACKAGE_DEF in ${APT_PACKAGES[@]}; do
     PACKAGE_NAME=${PACKAGE_DEF/:*/}
     APP_NAME=${PACKAGE_DEF/*:/}
@@ -33,6 +38,17 @@ for PACKAGE_DEF in ${APT_PACKAGES[@]}; do
         sudo apt install -y $PACKAGE_NAME
     fi
 done
+
+if ! grep -F '. "$HOME/.cargo/env"' "$HOME/.profile" >/dev/null; then
+    echo '. "$HOME/.cargo/env"' >> "$HOME/.profile"
+fi
+
+for PACKAGE_NAME in ${CARGO_PACKAGES[@]}; do
+    if ! which $PACKAGE_NAME >/dev/null; then
+        cargo install $PACKAGE_NAME
+    fi
+done
+
 
 if ! [ -d "$OMZ_CUSTOM_DIR" ]; then
     sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)" "" --unattended
