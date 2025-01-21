@@ -10,7 +10,7 @@ TPM_DIR="$HOME/.tmux/plugins/tpm"
 
 APT_PACKAGES=(
     bat:batcat
-    cargo
+    eza
     git
     less
     nano
@@ -18,10 +18,6 @@ APT_PACKAGES=(
     tmux
     wget
     zsh
-)
-
-CARGO_PACKAGES=(
-    eza
 )
 
 GIT_PACKAGES=(
@@ -42,19 +38,6 @@ for PACKAGE_DEF in ${APT_PACKAGES[@]}; do
 
     if ! which $APP_NAME >/dev/null; then
         sudo apt install -y $PACKAGE_NAME
-    fi
-done
-
-if ! grep -F '. "$HOME/.cargo/env"' "$HOME/.profile" >/dev/null; then
-    echo '. "$HOME/.cargo/env"' >> "$HOME/.profile"
-fi
-
-for PACKAGE_DEF in ${CARGO_PACKAGES[@]}; do
-    PACKAGE_NAME=${PACKAGE_DEF/:*/}
-    APP_NAME=${PACKAGE_DEF/*:/}
-
-    if ! which $APP_NAME >/dev/null; then
-        cargo install $PACKAGE_NAME
     fi
 done
 
