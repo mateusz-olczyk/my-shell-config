@@ -34,7 +34,9 @@ alias omzr="omz reload"
 alias omzi="omz plugin info"
 
 # filesystem
-alias l="eza --long --all --group-directories-first"
+alias l="eza --group-directories-first --icons"
+alias ll="l --all -1"
+alias lll="l --all --long"
 alias file-size="du -sh"
 alias trash="gio trash"
 
