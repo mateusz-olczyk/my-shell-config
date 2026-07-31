@@ -17,6 +17,7 @@ alias gcpn="git cherry-pick --no-commit"
 alias grevn="git revert --no-commit"
 alias gstum="git stash push --include-untracked --message"
 alias gsha="git rev-parse HEAD"
+alias gbt="git branch | tree --noreport --fromfile ."
 
 # rg
 alias rgu="rg -u"

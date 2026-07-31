@@ -16,6 +16,7 @@ APT_PACKAGES=(
     nano
     ripgrep:rg
     tmux
+    tree
     wget
     zsh
 )
